@@ -15,7 +15,7 @@ npm run dev             # nodemon, auto-restarts on file changes
 npm start                # plain node
 ```
 
-The API runs at `http://localhost:5000` by default. A health check is
+The API runs at `http://localhost:5001` by default. A health check is
 available at `GET /api/health`.
 
 ## Project structure

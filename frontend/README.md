@@ -28,12 +28,12 @@ while still being a modern React app.
 ```bash
 cd frontend
 npm install
-cp .env.example .env   # only needed if your API isn't on localhost:5000
+cp .env.example .env   # only needed if your API isn't on localhost:5001
 npm run dev
 ```
 
 The app runs at `http://localhost:5173` and expects the backend at the URL
-in `VITE_API_URL` (defaults to `http://localhost:5000/api`).
+in `VITE_API_URL` (defaults to `http://localhost:5001/api`).
 
 ## Project structure
 
