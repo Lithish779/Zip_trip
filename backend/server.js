@@ -17,6 +17,14 @@ app.use(cors({ origin: corsOrigin }));
 app.use(express.json());
 app.use(morgan("dev"));
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "Ziptrrip Todo API is running!",
+    health: "/api/health",
+    todos: "/api/todos",
+  });
+});
+
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });

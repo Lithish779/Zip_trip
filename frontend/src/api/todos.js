@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+const BASE_URL = import.meta.env.VITE_API_URL || "https://zip-trip-5l26.onrender.com/api";
 
 const client = axios.create({ baseURL: BASE_URL });
 
