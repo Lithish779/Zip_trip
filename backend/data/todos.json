@@ -1,0 +1,46 @@
+[
+  {
+    "id": "d1a1f7b0-1a2b-4c3d-8e4f-000000000001",
+    "title": "Finish Ziptrrip todo challenge",
+    "description": "Build the React frontend, Express backend, wire them together, and write documentation before submitting.",
+    "priority": "high",
+    "category": "Work",
+    "dueDate": "2026-09-05",
+    "completed": false,
+    "createdAt": "2026-08-25T09:00:00.000Z",
+    "updatedAt": "2026-08-25T09:00:00.000Z"
+  },
+  {
+    "id": "d1a1f7b0-1a2b-4c3d-8e4f-000000000002",
+    "title": "Revise DSA - Graphs",
+    "description": "Practice BFS/DFS and shortest path problems for upcoming interviews.",
+    "priority": "medium",
+    "category": "Study",
+    "dueDate": "2026-09-10",
+    "completed": false,
+    "createdAt": "2026-08-26T09:00:00.000Z",
+    "updatedAt": "2026-08-26T09:00:00.000Z"
+  },
+  {
+    "id": "d1a1f7b0-1a2b-4c3d-8e4f-000000000003",
+    "title": "Grocery shopping",
+    "description": "Milk, eggs, bread, and coffee.",
+    "priority": "low",
+    "category": "Shopping",
+    "dueDate": null,
+    "completed": true,
+    "createdAt": "2026-08-20T09:00:00.000Z",
+    "updatedAt": "2026-08-27T09:00:00.000Z"
+  },
+  {
+    "id": "74c94a84-d1aa-4d03-9acd-d7de892f0b36",
+    "title": "kl",
+    "description": "knjl",
+    "priority": "medium",
+    "category": "Personal",
+    "dueDate": "2026-09-17",
+    "completed": false,
+    "createdAt": "2026-09-01T12:42:47.492Z",
+    "updatedAt": "2026-09-01T12:42:47.492Z"
+  }
+]
