@@ -6,14 +6,29 @@ const todoRoutes = require("./routes/todoRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+const defaultOrigins = [
+  "https://zip-trip-brown.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
 const rawOrigin = process.env.CLIENT_ORIGIN;
-const corsOrigin = rawOrigin
-  ? rawOrigin.includes(",")
-    ? rawOrigin.split(",").map((o) => o.trim())
-    : rawOrigin
-  : true;
+const envOrigins = rawOrigin
+  ? rawOrigin.split(",").map((o) => o.trim())
+  : [];
+const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
 
-app.use(cors({ origin: corsOrigin }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(morgan("dev"));
 
