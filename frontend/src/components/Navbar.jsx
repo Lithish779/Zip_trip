@@ -1,7 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { ZiptrripLogo } from "./Icons";
 
 export default function Navbar() {
-  const location = useLocation();
   const todayDate = new Date().toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
@@ -21,9 +21,11 @@ export default function Navbar() {
           </div>
         </div>
 
-        <Link to="/" className="navbar-brand">
-          <span className="brand-badge">ZIPTRRIP</span>
-          Task Manager
+        <Link to="/" className="navbar-brand" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <ZiptrripLogo />
+          <span className="brand-badge" style={{ background: "rgba(0, 194, 255, 0.12)", color: "#0088CC", border: "1px solid rgba(0, 194, 255, 0.3)" }}>
+            TODO
+          </span>
         </Link>
       </div>
     </header>

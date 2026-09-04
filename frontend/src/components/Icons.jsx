@@ -1,3 +1,24 @@
+export function ZiptrripIconMark({ className = "brand-mark-svg", width = 36, height = 36 }) {
+  return (
+    <svg width={width} height={height} viewBox="0 0 40 40" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+      <rect x="2.5" y="2.5" width="35" height="35" rx="3" fill="#20E5D7" stroke="#5E6368" strokeWidth="3.5" />
+      <line x1="2.5" y1="37.5" x2="37.5" y2="2.5" stroke="#5E6368" strokeWidth="3.5" strokeLinecap="round" />
+      <line x1="37.5" y1="37.5" x2="16" y2="24" stroke="#5E6368" strokeWidth="3.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function ZiptrripLogo({ className = "ziptrrip-logo-svg" }) {
+  return (
+    <div className={`ziptrrip-logo-wrapper ${className}`} style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}>
+      <ZiptrripIconMark width={34} height={34} />
+      <span className="ziptrrip-logo-text" style={{ fontSize: "1.45rem", fontWeight: "500", color: "#5E6368", letterSpacing: "-0.02em", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+        ziptrrip
+      </span>
+    </div>
+  );
+}
+
 export function SearchIcon({ className = "icon" }) {
   return (
     <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
