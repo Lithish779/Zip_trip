@@ -1,4 +1,5 @@
 import { CATEGORIES, PRIORITIES } from "../constants";
+import { SearchIcon } from "./Icons";
 
 export default function FilterBar({ filters, onChange }) {
   function handleField(field, value) {
@@ -7,27 +8,32 @@ export default function FilterBar({ filters, onChange }) {
 
   return (
     <div className="filter-bar">
-      <input
-        type="text"
-        placeholder="Search todos..."
-        value={filters.search}
-        onChange={(e) => handleField("search", e.target.value)}
-        className="filter-search"
-      />
+      <div className="filter-search-wrapper">
+        <SearchIcon className="filter-search-icon" />
+        <input
+          type="text"
+          placeholder="Search your tasks..."
+          value={filters.search}
+          onChange={(e) => handleField("search", e.target.value)}
+          className="filter-search-input"
+        />
+      </div>
 
       <select
+        className="filter-select"
         value={filters.priority}
         onChange={(e) => handleField("priority", e.target.value)}
       >
         <option value="">All priorities</option>
         {PRIORITIES.map((p) => (
           <option key={p} value={p}>
-            {p[0].toUpperCase() + p.slice(1)}
+            {p[0].toUpperCase() + p.slice(1)} Priority
           </option>
         ))}
       </select>
 
       <select
+        className="filter-select"
         value={filters.category}
         onChange={(e) => handleField("category", e.target.value)}
       >
@@ -40,6 +46,7 @@ export default function FilterBar({ filters, onChange }) {
       </select>
 
       <select
+        className="filter-select"
         value={filters.completed}
         onChange={(e) => handleField("completed", e.target.value)}
       >
@@ -49,6 +56,7 @@ export default function FilterBar({ filters, onChange }) {
       </select>
 
       <select
+        className="filter-select"
         value={filters.sortBy}
         onChange={(e) => handleField("sortBy", e.target.value)}
       >
@@ -60,7 +68,7 @@ export default function FilterBar({ filters, onChange }) {
 
       <button
         type="button"
-        className="btn-ghost"
+        className="filter-order-btn"
         onClick={() => handleField("order", filters.order === "asc" ? "desc" : "asc")}
         title="Toggle sort order"
       >

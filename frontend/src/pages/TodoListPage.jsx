@@ -4,6 +4,7 @@ import TodoCard from "../components/TodoCard";
 import TodoForm from "../components/TodoForm";
 import FilterBar from "../components/FilterBar";
 import StatsBar from "../components/StatsBar";
+import { PlusIcon } from "../components/Icons";
 
 const defaultFilters = {
   search: "",
@@ -29,7 +30,7 @@ export default function TodoListPage() {
       const data = await fetchTodos(filters);
       setTodos(data.todos);
     } catch (err) {
-      setError("Could not load todos. Is the backend running on port 5000?");
+      setError("Could not load tasks. Please ensure the backend server is running.");
     } finally {
       setLoading(false);
     }
@@ -40,7 +41,7 @@ export default function TodoListPage() {
       const data = await fetchStats();
       setStats(data);
     } catch {
-      // Stats are a nice-to-have; a failure here shouldn't block the page.
+      // Stats are non-blocking
     }
   }, []);
 
@@ -59,19 +60,18 @@ export default function TodoListPage() {
   }
 
   async function handleToggle(id) {
-    // Optimistic update for a snappier feel.
     setTodos((prev) =>
       prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
     );
     try {
       await toggleTodo(id);
     } catch {
-      loadTodos(); // revert to server truth on failure
+      loadTodos();
     }
   }
 
   async function handleDelete(id) {
-    if (!window.confirm("Delete this todo? This cannot be undone.")) return;
+    if (!window.confirm("Delete this task? This cannot be undone.")) return;
     setTodos((prev) => prev.filter((t) => t.id !== id));
     try {
       await deleteTodo(id);
@@ -81,40 +81,65 @@ export default function TodoListPage() {
   }
 
   return (
-    <div className="page">
+    <div className="app-container">
+      {/* Top Title & CTA */}
       <div className="page-header">
-        <div>
-          <h1>Your Todos</h1>
+        <div className="page-title-group">
+          <h1>Manage your task</h1>
           <p className="page-subtitle">
-            {loading ? "Loading..." : `${todos.length} shown`}
+            Increase your productivity by managing your personal and team tasks
           </p>
         </div>
         <button className="btn-primary" onClick={() => setShowForm((s) => !s)}>
-          {showForm ? "Close" : "+ New Todo"}
+          <PlusIcon /> {showForm ? "Close Form" : "New Task"}
         </button>
       </div>
 
-      <StatsBar stats={stats} />
+      {/* Hero Summary & Category Tiles (Matching Image 2) */}
+      <StatsBar stats={stats} onNewTaskClick={() => setShowForm(true)} />
 
+      {/* Form Card Overlay when toggled */}
       {showForm && (
-        <div className="card">
-          <TodoForm submitLabel="Add Todo" onSubmit={handleCreate} onCancel={() => setShowForm(false)} />
+        <div className="form-card">
+          <h3 className="form-card-title">Create New Task</h3>
+          <TodoForm
+            submitLabel="Create Task"
+            onSubmit={handleCreate}
+            onCancel={() => setShowForm(false)}
+          />
         </div>
       )}
 
+      {/* Search & Filters */}
       <FilterBar filters={filters} onChange={setFilters} />
 
-      {error && <p className="form-error">{error}</p>}
+      {error && <div className="form-error-banner">{error}</div>}
 
+      {/* List Header */}
+      <div className="section-heading">
+        <h2>Upcoming Task</h2>
+        <span className="see-all-link">{todos.length} shown</span>
+      </div>
+
+      {/* Empty State */}
       {!loading && todos.length === 0 && !error && (
         <div className="empty-state">
-          <p>No todos match your filters yet.</p>
+          <p style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--color-ink)", marginBottom: 4 }}>
+            No tasks found
+          </p>
+          <p>Try clearing your filters or create a new task above.</p>
         </div>
       )}
 
-      <div className="todo-list">
+      {/* Task Cards List */}
+      <div className="todo-list-container">
         {todos.map((todo) => (
-          <TodoCard key={todo.id} todo={todo} onToggle={handleToggle} onDelete={handleDelete} />
+          <TodoCard
+            key={todo.id}
+            todo={todo}
+            onToggle={handleToggle}
+            onDelete={handleDelete}
+          />
         ))}
       </div>
     </div>

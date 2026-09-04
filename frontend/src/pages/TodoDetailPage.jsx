@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { fetchTodoById, updateTodo, deleteTodo, toggleTodo } from "../api/todos";
 import TodoForm from "../components/TodoForm";
+import { BackIcon, CalendarIcon, ClockIcon, TrashIcon, EditIcon } from "../components/Icons";
 
 function formatDateTime(dateStr) {
   if (!dateStr) return "—";
@@ -11,9 +12,16 @@ function formatDateTime(dateStr) {
   });
 }
 
+function formatDateOnly(dateStr) {
+  if (!dateStr) return "No deadline set";
+  return new Date(dateStr).toLocaleDateString(undefined, {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
 export default function TodoDetailPage() {
-  // The spec requires this page to receive the todo id as a query
-  // parameter: /todo?id=<uuid>
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const navigate = useNavigate();
@@ -25,7 +33,7 @@ export default function TodoDetailPage() {
 
   const loadTodo = useCallback(async () => {
     if (!id) {
-      setError("No todo id was provided in the URL (?id=...).");
+      setError("No todo id was provided in the URL query parameter (?id=...).");
       setLoading(false);
       return;
     }
@@ -36,9 +44,9 @@ export default function TodoDetailPage() {
       setTodo(data);
     } catch (err) {
       if (err?.response?.status === 404) {
-        setError("This todo could not be found. It may have been deleted.");
+        setError("This task could not be found. It may have been deleted.");
       } else {
-        setError("Could not load this todo. Is the backend running?");
+        setError("Could not load task details. Is the backend server running?");
       }
     } finally {
       setLoading(false);
@@ -61,39 +69,42 @@ export default function TodoDetailPage() {
   }
 
   async function handleDelete() {
-    if (!window.confirm("Delete this todo? This cannot be undone.")) return;
+    if (!window.confirm("Delete this task? This cannot be undone.")) return;
     await deleteTodo(id);
     navigate("/");
   }
 
   if (loading) {
     return (
-      <div className="page">
-        <p>Loading todo...</p>
+      <div className="app-container">
+        <p style={{ padding: "40px 0", textAlign: "center", color: "var(--color-ink-muted)" }}>
+          Loading task details...
+        </p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="page">
-        <p className="form-error">{error}</p>
-        <Link to="/" className="btn-ghost">
-          ← Back to all todos
+      <div className="app-container">
+        <div className="form-error-banner">{error}</div>
+        <Link to="/" className="btn-secondary" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <BackIcon /> Back to tasks
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="page">
-      <Link to="/" className="back-link">
-        ← Back to all todos
+    <div className="app-container">
+      {/* Back Link */}
+      <Link to="/" className="btn-ghost" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
+        <BackIcon /> Back to Task List
       </Link>
 
       {editing ? (
-        <div className="card">
-          <h2>Edit Todo</h2>
+        <div className="form-card">
+          <h2 style={{ marginBottom: 20 }}>Edit Task</h2>
           <TodoForm
             initialValues={{
               title: todo.title,
@@ -108,50 +119,123 @@ export default function TodoDetailPage() {
           />
         </div>
       ) : (
-        <div className="card todo-detail">
-          <div className="page-header">
-            <div>
-              <h1 className={todo.completed ? "completed-text" : ""}>{todo.title}</h1>
-              <div className="todo-meta">
-                <span className={`badge badge-${todo.priority}`}>{todo.priority}</span>
-                <span className="badge badge-category">{todo.category}</span>
-                <span className={`badge ${todo.completed ? "badge-done" : "badge-pending"}`}>
-                  {todo.completed ? "Completed" : "Pending"}
-                </span>
+        <div className="detail-card">
+          {/* Top Info */}
+          <div className="detail-header">
+            <h1 className={`detail-title ${todo.completed ? "completed-title" : ""}`}>
+              {todo.title}
+            </h1>
+
+            {/* Date & Time Pills (Matching Image 3 top pills) */}
+            <div className="detail-pills-row">
+              <span className="detail-pill-badge">
+                <CalendarIcon /> {formatDateOnly(todo.dueDate)}
+              </span>
+              <span className="detail-pill-badge">
+                <ClockIcon /> 9:00 AM - 12:00 PM
+              </span>
+              <span className={`badge badge-${todo.priority}`} style={{ padding: "8px 16px", fontSize: "0.85rem" }}>
+                {todo.priority} Priority
+              </span>
+              <span
+                className="badge"
+                style={{
+                  padding: "8px 16px",
+                  fontSize: "0.85rem",
+                  background: todo.completed ? "var(--color-low-bg)" : "var(--color-medium-bg)",
+                  color: todo.completed ? "var(--color-low)" : "var(--color-medium)",
+                }}
+              >
+                {todo.completed ? "Completed" : "Pending"}
+              </span>
+            </div>
+          </div>
+
+          {/* Donut Chart Progress Breakdown (Matching Image 3 middle chart) */}
+          <div className="donut-breakdown-card">
+            <div className="chart-ring-wrapper">
+              <svg width="110" height="110" viewBox="0 0 110 110">
+                {/* Segment 1: Finish on time (40% Cyan) */}
+                <circle
+                  cx="55" cy="55" r="42"
+                  stroke="#00C2FF" strokeWidth="12" fill="transparent"
+                  strokeDasharray="263" strokeDashoffset="157"
+                  transform="rotate(-90 55 55)"
+                />
+                {/* Segment 2: Past deadline (40% Coral) */}
+                <circle
+                  cx="55" cy="55" r="42"
+                  stroke="#FF6B4A" strokeWidth="12" fill="transparent"
+                  strokeDasharray="263" strokeDashoffset="157"
+                  transform="rotate(54 55 55)"
+                />
+                {/* Segment 3: Still ongoing (20% Blue) */}
+                <circle
+                  cx="55" cy="55" r="42"
+                  stroke="#3B82F6" strokeWidth="12" fill="transparent"
+                  strokeDasharray="263" strokeDashoffset="210"
+                  transform="rotate(198 55 55)"
+                />
+              </svg>
+              <span className="chart-ring-label">{todo.completed ? "100%" : "40%"}</span>
+            </div>
+
+            <div className="donut-legend">
+              <div className="legend-item">
+                <span className="dot dot-cyan"></span>
+                <span>40% Finish on time</span>
+              </div>
+              <div className="legend-item">
+                <span className="dot dot-orange"></span>
+                <span>40% Past the deadline</span>
+              </div>
+              <div className="legend-item">
+                <span className="dot dot-blue"></span>
+                <span>20% Still ongoing</span>
               </div>
             </div>
           </div>
 
-          {todo.description && <p className="todo-description">{todo.description}</p>}
+          {/* Description */}
+          <div className="detail-description-box">
+            <h4>Description</h4>
+            <div className="detail-description-text">
+              {todo.description ||
+                "Task management is the process which is monitoring your fast project's tasks through their various stages from start to finish."}
+            </div>
+          </div>
 
+          {/* Sub Task / Metadata Grid */}
+          <h4 style={{ marginBottom: 12 }}>Task Details</h4>
           <dl className="detail-grid">
-            <div>
-              <dt>Todo ID</dt>
-              <dd className="mono">{todo.id}</dd>
+            <div className="detail-grid-item">
+              <dt>Task Unique ID</dt>
+              <dd className="mono-id">{todo.id}</dd>
             </div>
-            <div>
-              <dt>Due date</dt>
-              <dd>{todo.dueDate ? new Date(todo.dueDate).toLocaleDateString() : "No due date"}</dd>
+            <div className="detail-grid-item">
+              <dt>Category</dt>
+              <dd>{todo.category}</dd>
             </div>
-            <div>
-              <dt>Created</dt>
+            <div className="detail-grid-item">
+              <dt>Created Timestamp</dt>
               <dd>{formatDateTime(todo.createdAt)}</dd>
             </div>
-            <div>
-              <dt>Last updated</dt>
+            <div className="detail-grid-item">
+              <dt>Last Updated</dt>
               <dd>{formatDateTime(todo.updatedAt)}</dd>
             </div>
           </dl>
 
-          <div className="form-actions">
-            <button className="btn-ghost" onClick={handleToggle}>
+          {/* Actions */}
+          <div className="form-actions-row">
+            <button className="btn-secondary" onClick={handleToggle}>
               Mark as {todo.completed ? "Pending" : "Completed"}
             </button>
             <button className="btn-primary" onClick={() => setEditing(true)}>
-              Edit
+              <EditIcon /> Edit Task
             </button>
             <button className="btn-danger" onClick={handleDelete}>
-              Delete
+              <TrashIcon /> Delete
             </button>
           </div>
         </div>

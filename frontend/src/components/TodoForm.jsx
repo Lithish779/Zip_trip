@@ -9,7 +9,7 @@ const emptyForm = {
   dueDate: "",
 };
 
-export default function TodoForm({ initialValues, submitLabel = "Add Todo", onSubmit, onCancel }) {
+export default function TodoForm({ initialValues, submitLabel = "Add Task", onSubmit, onCancel }) {
   const [form, setForm] = useState({ ...emptyForm, ...initialValues });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -21,7 +21,7 @@ export default function TodoForm({ initialValues, submitLabel = "Add Todo", onSu
   async function handleSubmit(e) {
     e.preventDefault();
     if (!form.title.trim()) {
-      setError("Title is required.");
+      setError("Task title is required.");
       return;
     }
     setError("");
@@ -32,7 +32,7 @@ export default function TodoForm({ initialValues, submitLabel = "Add Todo", onSu
         dueDate: form.dueDate || null,
       });
       if (!initialValues) {
-        setForm(emptyForm); // reset after creating a new todo
+        setForm(emptyForm);
       }
     } catch (err) {
       setError(err?.response?.data?.errors?.join(", ") || "Something went wrong.");
@@ -43,50 +43,46 @@ export default function TodoForm({ initialValues, submitLabel = "Add Todo", onSu
 
   return (
     <form className="todo-form" onSubmit={handleSubmit}>
-      {error && <p className="form-error">{error}</p>}
+      {error && <div className="form-error-banner">{error}</div>}
 
-      <div className="form-row">
-        <label>
-          Title *
-          <input
-            type="text"
-            value={form.title}
-            onChange={(e) => handleChange("title", e.target.value)}
-            placeholder="What needs to be done?"
-            maxLength={120}
-          />
-        </label>
+      <div className="form-group">
+        <label>Task Title *</label>
+        <input
+          type="text"
+          value={form.title}
+          onChange={(e) => handleChange("title", e.target.value)}
+          placeholder="e.g. User experience design..."
+          maxLength={120}
+        />
       </div>
 
-      <div className="form-row">
-        <label>
-          Description
-          <textarea
-            value={form.description}
-            onChange={(e) => handleChange("description", e.target.value)}
-            placeholder="Add more detail (optional)"
-            rows={3}
-          />
-        </label>
+      <div className="form-group">
+        <label>Description</label>
+        <textarea
+          value={form.description}
+          onChange={(e) => handleChange("description", e.target.value)}
+          placeholder="Add detailed task notes or subtasks..."
+          rows={3}
+        />
       </div>
 
-      <div className="form-row form-row-grid">
-        <label>
-          Priority
+      <div className="form-group form-grid-3">
+        <div>
+          <label>Priority</label>
           <select
             value={form.priority}
             onChange={(e) => handleChange("priority", e.target.value)}
           >
             {PRIORITIES.map((p) => (
               <option key={p} value={p}>
-                {p[0].toUpperCase() + p.slice(1)}
+                {p[0].toUpperCase() + p.slice(1)} Priority
               </option>
             ))}
           </select>
-        </label>
+        </div>
 
-        <label>
-          Category
+        <div>
+          <label>Category</label>
           <select
             value={form.category}
             onChange={(e) => handleChange("category", e.target.value)}
@@ -97,21 +93,21 @@ export default function TodoForm({ initialValues, submitLabel = "Add Todo", onSu
               </option>
             ))}
           </select>
-        </label>
+        </div>
 
-        <label>
-          Due date
+        <div>
+          <label>Due Date</label>
           <input
             type="date"
             value={form.dueDate || ""}
             onChange={(e) => handleChange("dueDate", e.target.value)}
           />
-        </label>
+        </div>
       </div>
 
-      <div className="form-actions">
+      <div className="form-actions-row">
         {onCancel && (
-          <button type="button" className="btn-ghost" onClick={onCancel}>
+          <button type="button" className="btn-secondary" onClick={onCancel}>
             Cancel
           </button>
         )}
