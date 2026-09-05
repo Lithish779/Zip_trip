@@ -119,8 +119,16 @@ async function toggleTodo(req, res) {
     return res.status(404).json({ error: "Todo not found" });
   }
 
-  todos[index].completed = !todos[index].completed;
-  todos[index].updatedAt = new Date().toISOString();
+  const current = todos[index];
+  const newCompleted = !current.completed;
+  current.completed = newCompleted;
+  if (newCompleted) {
+    current.prevProgress = current.progress ?? 0;
+    current.progress = 100;
+  } else {
+    current.progress = current.prevProgress ?? 0;
+  }
+  current.updatedAt = new Date().toISOString();
   await store.write(todos);
 
   res.json(todos[index]);

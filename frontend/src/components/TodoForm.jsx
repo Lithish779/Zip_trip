@@ -7,6 +7,7 @@ const emptyForm = {
   priority: "medium",
   category: "Other",
   dueDate: "",
+  progress: 70,
 };
 
 export default function TodoForm({ initialValues, submitLabel = "Add Task", onSubmit, onCancel }) {
@@ -30,6 +31,7 @@ export default function TodoForm({ initialValues, submitLabel = "Add Task", onSu
       await onSubmit({
         ...form,
         dueDate: form.dueDate || null,
+        progress: Number(form.progress) || 0,
       });
       if (!initialValues) {
         setForm(emptyForm);
@@ -103,6 +105,24 @@ export default function TodoForm({ initialValues, submitLabel = "Add Task", onSu
             onChange={(e) => handleChange("dueDate", e.target.value)}
           />
         </div>
+      </div>
+
+      <div className="form-group">
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+          <label style={{ margin: 0 }}>Initial Progress</label>
+          <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-cyan-dark)" }}>
+            {form.progress}%
+          </span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="5"
+          value={form.progress ?? 0}
+          onChange={(e) => handleChange("progress", e.target.value)}
+          style={{ width: "100%", accentColor: "var(--color-cyan-dark)", cursor: "pointer" }}
+        />
       </div>
 
       <div className="form-actions-row">

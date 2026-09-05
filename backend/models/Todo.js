@@ -18,8 +18,10 @@ const CATEGORIES = ["Personal", "Work", "Study", "Shopping", "Health", "Other"];
  * }
  */
 
-function createTodo({ title, description, priority, category, dueDate }) {
+function createTodo({ title, description, priority, category, dueDate, progress }) {
   const now = new Date().toISOString();
+  const parsedProgress = Number(progress);
+  const validProgress = !isNaN(parsedProgress) ? Math.min(100, Math.max(0, Math.round(parsedProgress))) : 0;
   return {
     id: uuidv4(),
     title: title.trim(),
@@ -27,6 +29,7 @@ function createTodo({ title, description, priority, category, dueDate }) {
     priority: PRIORITIES.includes(priority) ? priority : "medium",
     category: category && category.trim() ? category.trim() : "Other",
     dueDate: dueDate || null,
+    progress: validProgress,
     completed: false,
     createdAt: now,
     updatedAt: now,
@@ -57,6 +60,13 @@ function validateTodoInput(body, { partial = false } = {}) {
 
   if (body.completed !== undefined && typeof body.completed !== "boolean") {
     errors.push("completed must be a boolean");
+  }
+
+  if (body.progress !== undefined && body.progress !== null) {
+    const p = Number(body.progress);
+    if (isNaN(p) || p < 0 || p > 100) {
+      errors.push("progress must be a number between 0 and 100");
+    }
   }
 
   return errors;

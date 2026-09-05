@@ -96,7 +96,7 @@ export default function TodoListPage() {
       </div>
 
       {/* Hero Summary & Category Tiles (Matching Image 2) */}
-      <StatsBar stats={stats} onNewTaskClick={() => setShowForm(true)} />
+      <StatsBar stats={stats} todos={todos} onNewTaskClick={() => setShowForm(true)} />
 
       {/* Form Card Overlay when toggled */}
       {showForm && (
